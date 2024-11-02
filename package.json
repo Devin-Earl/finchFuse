@@ -1,0 +1,11 @@
+{
+  "name": "finch-frontend",
+  "version": "1.0.0",
+  "description": "A simple vanilla JavaScript site for FinchFrontend",
+  "scripts": {
+    "build": "echo 'Building the project...'",
+    "start": "echo 'Starting the project...'"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
