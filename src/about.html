@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About This App</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+<body class="container my-4">
+
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h1>About This App</h1>
+    </div>
+
+    <!-- Markdown Content Section -->
+    <div id="markdownContent" class="border p-4 rounded bg-light">
+        <p>Welcome to the FinchFrontend Dashboard. Here, you can explore how this app was developed, the design decisions, and more.</p>
+    </div>
+
+    <!-- Navigation Link -->
+    <div class="text-center mt-4">
+        <a href="index.html" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
+    <!-- JavaScript Libraries for Markdown Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.10/marked.min.js"></script>
+    <script>
+        // Example markdown content
+        const markdownText = `
+        # Project Overview
+        This app is built to interact with the Finch API, allowing users to view employer and individual data based on selected providers.
+
+        ## Key Features
+        - **Provider selection**: Choose from multiple providers to fetch data.
+        - **Data Type selection**: Switch between employer and individual data.
+        
+        ## Future Enhancements
+        Plans to implement role-based access control (RBAC) and more.
+        `;
+
+        document.getElementById('markdownContent').innerHTML = marked.parse(markdownText);
+    </script>
+</body>
+</html>

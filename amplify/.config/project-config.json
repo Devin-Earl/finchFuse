@@ -6,11 +6,10 @@
   "javascript": {
     "framework": "none",
     "config": {
-      "SourceDir": "src",
+      "SourceDir": "/src",
       "DistributionDir": "/",
       "BuildCommand": "npm run build",
-      "StartCommand": "npm start",
-      "ServerlessContainers": true
+      "StartCommand": "npm run start"
     }
   },
   "providers": [

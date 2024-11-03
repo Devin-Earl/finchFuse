@@ -1,0 +1,92 @@
+import os
+import json
+import requests
+from loguru import logger
+
+
+BASE_URL = "https://api.tryfinch.com/sandbox/"
+
+def get_headers(token):
+    return {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+        "Finch-Api-Version": "2020-09-17"
+    }
+def error_logic(response):
+    if response.status_code == 200:
+        return response.json()
+    elif response.status_code == 401:
+       logger.error("401 Unauthorized- Access token may have been revoked or is in need of reauthorization - https://developer.tryfinch.com/developer-resources/Reauthentication")
+       return {"error": "401 Unauthorized- Access token may have been revoked or is in need of reauthorization - https://developer.tryfinch.com/developer-resources/Reauthentication"}
+    elif response.status_code == 408:
+        logger.error("408 Request Timeout- The request timed out. Reminder Finch API has a 6 min timeout.")
+        return {"error": "408 Request Timeout- The request timed out. Reminder Finch API has a 6 min timeout."}
+    elif response.status_code == 500:
+        logger.error("500 Internal Server Error- The server encountered an unexpected condition that prevented it from fulfilling the request.")
+        return {"error": "500 Internal Server Error- The server encountered an unexpected condition that prevented it from fulfilling the request."}
+    else:
+        logger.error(f"An unexpected error occurred: {response.status_code}")
+        return {"error": "An unexpected error occurred: {response.status_code}"}
+    
+# Endpoint fetch functions
+def fetch_company_data(token):
+    logger.info("Fetching company data...")
+    response = requests.get(f"{BASE_URL}/employer/company", headers=get_headers(token))
+    return error_logic(response)
+
+def fetch_directory_data(token):
+    logger.info("Fetching directory data...")
+    response = requests.get(f"{BASE_URL}/employer/directory", headers=get_headers(token))
+    return error_logic(response)
+
+def fetch_individual_data(token, individual_id):
+    logger.info(f"Fetching individual data for individual ID: {individual_id} ...")
+    response = requests.get(f"{BASE_URL}/employer/individuals/{individual_id}", headers=get_headers(token))
+    return error_logic(response)
+
+def fetch_employment_data(token, individual_id):
+    logger.info(f"Fetching employment data for individual ID: {individual_id} ...")
+    response = requests.get(f"{BASE_URL}/employer/employment/{individual_id}", headers=get_headers(token))
+    return error_logic(response)
+
+def lambda_handler(event, context):
+    provider = event['queryStringParameters'].get('provider')
+    data_type = event['queryStringParameters'].get('dataType')
+    individual_id = event['queryStringParameters'].get('individualId')
+
+    
+    token = os.getenv(f"FINCH_ACCESS_TOKEN_{provider}")
+    if not token:
+         logger.error("Invalid provider or missing access token.")
+         return {
+            'statusCode': 400,
+            'body': json.dumps({"error": "Invalid provider or missing access token"})
+        }
+
+    try:
+        
+        if data_type == "company":
+            data = fetch_company_data(token)
+        elif data_type == "directory":
+            data = fetch_directory_data(token)
+        elif data_type == "individual" and individual_id:
+            data = fetch_individual_data(token, individual_id)
+        elif data_type == "employment" and individual_id:
+            data = fetch_employment_data(token, individual_id)
+        else:
+            logger.error("Invalid data type or missing individual ID.")
+            return {
+                'statusCode': 400,
+                'body': json.dumps({"error": "Invalid data type or missing individual ID"})
+            }
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps(data)
+        }
+    except requests.exceptions.RequestException as e:
+        logger.exception("Request Failed")
+        return {
+            'statusCode': 500,
+            'body': json.dumps({"error": str(e)})
+        }

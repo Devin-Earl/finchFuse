@@ -1,25 +1,64 @@
 {
-  "hosting": {
-    "amplifyhosting": {
+  "function": {
+    "fetchFinchData": {
+      "build": true,
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
-      "service": "amplifyhosting",
-      "type": "manual"
+      "service": "Lambda"
+    }
+  },
+  "hosting": {
+    "S3AndCloudFront": {
+      "providerPlugin": "awscloudformation",
+      "service": "S3AndCloudFront"
     }
   },
   "parameters": {
-    "AMPLIFY_hosting_amplifyhosting_appId": {
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenBotsford": {
       "usedBy": [
         {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
+          "category": "function",
+          "resourceName": "fetchFinchData"
         }
       ]
     },
-    "AMPLIFY_hosting_amplifyhosting_type": {
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenHettinger": {
       "usedBy": [
         {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenKemmer": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenKonopelski": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenMosciski": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenWolff": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
         }
       ]
     }

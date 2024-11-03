@@ -1,11 +1,21 @@
-/* style.css */
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 50px;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 16px;
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.alert-heading {
+    font-size: 1.25em;
+}
+
+table {
+    margin-top: 20px;
+}
+
+#dataDisplay {
+    max-width: 80%;
+    margin: auto;
 }
