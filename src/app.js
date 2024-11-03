@@ -19,8 +19,17 @@ async function fetchData() {
     }
 
     try {
-        // Call the API endpoint based on the provider and data type
-        const response = await fetch(`https://your-api-endpoint.amazonaws.com/fetchData?provider=${provider}&dataType=${dataType}`);
+        // Get the current user's JWT token for authorization
+        const session = await Amplify.Auth.currentSession();
+        const token = session.getIdToken().getJwtToken();
+
+        // Call the API endpoint with the appropriate headers
+        const response = await fetch(`https://api.finchdemo.perilabs.io/finchdata?provider=${provider}&dataType=${dataType}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
         const data = await response.json();
 
         if (!response.ok) {

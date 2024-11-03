@@ -7,6 +7,25 @@
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./src/style.css">
+    <script type="module">
+        import { Auth } from 'aws-amplify';
+        import awsExports from './aws-exports.js';
+        Amplify.configure(awsExports);
+
+        // Redirect to login page if not authenticated
+        async function checkAuth() {
+            try {
+                await Auth.currentAuthenticatedUser();
+                // User is authenticated; continue loading the page
+            } catch {
+                // User is not authenticated; redirect to login.html
+                window.location.href = './src/login.html';
+            }
+        }
+
+        // Run the authentication check on page load
+        checkAuth();
+    </script>
 </head>
 <body class="container my-4">
 
@@ -14,11 +33,11 @@
     <div class="text-center mb-4">
         <h1>FinchFuse: Data Display On Demand</h1>
     </div>
-<!-- Navigation Links -->
-<div class="text-center mb-4">
-    <a href="./src/about.html" class="btn btn-info mr-2">About This App</a>
-    <a href="./src/login.html" class="btn btn-secondary">Login</a>
-</div>
+    <!-- Navigation Links -->
+    <div class="text-center mb-4">
+        <a href="./src/about.html" class="btn btn-info mr-2">About This App</a>
+        <a href="./src/login.html" class="btn btn-secondary">Login</a>
+    </div>
 
     <!-- Help Text Box -->
     <div class="alert alert-info" role="alert">

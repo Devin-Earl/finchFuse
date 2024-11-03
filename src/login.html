@@ -5,41 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./src/style.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://unpkg.com/@aws-amplify/ui-components"></script>
 </head>
 <body class="container my-4">
 
     <!-- Login Header -->
     <div class="text-center mb-4">
-        <h1>Login</h1>
+        <h1>Login to FinchFuse</h1>
     </div>
 
-    <!-- Login Form -->
-    <form id="loginForm" class="border p-4 rounded bg-light">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
-        </div>
-        <button type="button" class="btn btn-primary btn-block" onclick="login()">Login</button>
-    </form>
-
-    <!-- Navigation Link -->
-    <div class="text-center mt-4">
-        <a href="index.html" class="btn btn-secondary">Back to Dashboard</a>
+    <!-- Amplify Authenticator Component -->
+    <div class="text-center mb-4">
+        <amplify-authenticator>
+            <amplify-sign-in slot="sign-in" header-text="Sign In" username-alias="email"></amplify-sign-in>
+        </amplify-authenticator>
     </div>
 
-    <script>
-        function login() {
-            // Placeholder function for login logic
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            alert(`Attempting login with username: ${username}`);
-            // Implement actual authentication and RBAC setup here
-        }
+    <script type="module">
+        import Amplify from 'aws-amplify';
+        import awsExports from './aws-exports.js';
+
+        Amplify.configure(awsExports);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authenticator = document.querySelector('amplify-authenticator');
+            authenticator.handleAuthStateChange = (nextAuthState, authData) => {
+                if (nextAuthState === 'signedin') {
+                    alert('Login successful!');
+                    window.location.href = './index.html';
+                }
+            };
+        });
     </script>
 </body>
 </html>

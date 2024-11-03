@@ -6,6 +6,8 @@
     "build": "echo 'Building the project...'",
     "start": "echo 'Starting the project...'"
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "@aws-amplify/ui": "^6.6.5",
+    "aws-amplify": "^6.8.0"
+  }
 }
