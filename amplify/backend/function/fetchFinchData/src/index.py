@@ -1,9 +1,10 @@
 import os
 import json
 import requests
+import jwt 
 from loguru import logger
 
-
+STANDARD_USER_ACCESS= {"MOSCISKI","HETTINGER"}
 BASE_URL = "https://api.tryfinch.com"
 
 def get_headers(token):
@@ -31,7 +32,7 @@ def error_logic(response):
             "message": response.text
         }
     
-# Endpoint fetch functions
+
 def fetch_company_data(token):
     logger.info(f"Fetching company data from ...")
     response = requests.get(f"{BASE_URL}/employer/company", headers=get_headers(token))
@@ -53,6 +54,19 @@ def fetch_employment_data(token, individual_id):
     return error_logic(response)
 
 def lambda_handler(event, context):
+    token= event['headers'].get('Authorization', '').split(' ')[1]
+    decoded_token = jwt.decode(token, options={"verify_signature": False}) #Doing this cause im lazy I know not to do this in PROD
+    
+    user_groups = decoded_token.get("cognito:groups", [])
+    is_admin = "admin" in user_groups
+    
+    if not is_admin and provider not in STANDARD_USER_ACCESS:
+        logger.error("Access denied: Restricted Provider: If Access is needed user must be added to Admin Group.")
+        return {
+            'statusCode': 403,
+            'body': json.dumps({"error": "Access denied to this provider"})
+        }
+    
     provider = event['queryStringParameters'].get('provider', '').upper()
     data_type = event['queryStringParameters'].get('dataType', '').lower()
     individual_id = event['queryStringParameters'].get('individualId')

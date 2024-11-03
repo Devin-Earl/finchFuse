@@ -29,6 +29,10 @@
       },
       "api": {
         "fetchFinchDataApi": {}
+      },
+      "auth": {
+        "finchfuse7b37cb7e": {},
+        "userPoolGroups": {}
       }
     }
   }
