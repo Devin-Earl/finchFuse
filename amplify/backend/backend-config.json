@@ -1,4 +1,20 @@
 {
+  "api": {
+    "fetchFinchDataApi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
   "function": {
     "fetchFinchData": {
       "build": true,
@@ -14,6 +30,14 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_fetchFinchData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
     "AMPLIFY_function_fetchFinchData_finchAccessTokenBotsford": {
       "usedBy": [
         {
@@ -55,6 +79,14 @@
       ]
     },
     "AMPLIFY_function_fetchFinchData_finchAccessTokenWolff": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_s3Key": {
       "usedBy": [
         {
           "category": "function",

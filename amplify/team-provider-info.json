@@ -22,8 +22,13 @@
           "finchAccessTokenWolff": "58ebb264-5a0a-4d97-833c-1f5cd7ac0aa6",
           "finchAccessTokenMosciski": "8c164e29-5f4b-4e13-985a-3b047bb8358b",
           "finchAccessTokenBotsford": "79d4f8b9-cde3-422a-9bfc-67a4430e9287",
-          "finchAccessTokenKemmer": "72c2a074-44f2-4b9e-9687-975b04d26691"
+          "finchAccessTokenKemmer": "72c2a074-44f2-4b9e-9687-975b04d26691",
+          "deploymentBucketName": "amplify-finchfuse-dev-622ef-deployment",
+          "s3Key": "amplify-builds/fetchFinchData-50676e44704b4d4c7573-build.zip"
         }
+      },
+      "api": {
+        "fetchFinchDataApi": {}
       }
     }
   }

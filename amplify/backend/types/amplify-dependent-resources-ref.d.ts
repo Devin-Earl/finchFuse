@@ -1,4 +1,20 @@
 export type AmplifyDependentResourcesAttributes = {
+  "api": {
+    "fetchFinchDataApi": {
+      "ApiId": "string",
+      "ApiName": "string",
+      "RootUrl": "string"
+    }
+  },
+  "function": {
+    "fetchFinchData": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    }
+  },
   "hosting": {
     "S3AndCloudFront": {
       "CloudFrontDistributionID": "string",

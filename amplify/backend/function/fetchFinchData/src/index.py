@@ -4,7 +4,7 @@ import requests
 from loguru import logger
 
 
-BASE_URL = "https://api.tryfinch.com/sandbox/"
+BASE_URL = "https://api.tryfinch.com"
 
 def get_headers(token):
     return {
@@ -26,11 +26,14 @@ def error_logic(response):
         return {"error": "500 Internal Server Error- The server encountered an unexpected condition that prevented it from fulfilling the request."}
     else:
         logger.error(f"An unexpected error occurred: {response.status_code}")
-        return {"error": "An unexpected error occurred: {response.status_code}"}
+        return {
+            "error": f"Unexpected error: {response.status_code}",
+            "message": response.text
+        }
     
 # Endpoint fetch functions
 def fetch_company_data(token):
-    logger.info("Fetching company data...")
+    logger.info(f"Fetching company data from ...")
     response = requests.get(f"{BASE_URL}/employer/company", headers=get_headers(token))
     return error_logic(response)
 
@@ -50,8 +53,8 @@ def fetch_employment_data(token, individual_id):
     return error_logic(response)
 
 def lambda_handler(event, context):
-    provider = event['queryStringParameters'].get('provider')
-    data_type = event['queryStringParameters'].get('dataType')
+    provider = event['queryStringParameters'].get('provider', '').upper()
+    data_type = event['queryStringParameters'].get('dataType', '').lower()
     individual_id = event['queryStringParameters'].get('individualId')
 
     
