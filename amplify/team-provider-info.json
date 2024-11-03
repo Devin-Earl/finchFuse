@@ -24,7 +24,7 @@
           "finchAccessTokenBotsford": "79d4f8b9-cde3-422a-9bfc-67a4430e9287",
           "finchAccessTokenKemmer": "72c2a074-44f2-4b9e-9687-975b04d26691",
           "deploymentBucketName": "amplify-finchfuse-dev-622ef-deployment",
-          "s3Key": "amplify-builds/fetchFinchData-50676e44704b4d4c7573-build.zip"
+          "s3Key": "amplify-builds/fetchFinchData-65574d43363471616a59-build.zip"
         }
       },
       "api": {
