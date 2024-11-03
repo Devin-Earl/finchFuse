@@ -1,7 +1,3 @@
-Here’s the cleaned-up markdown:
-
----
-
 # FinchFuse - Harnessing The Power of HRIS Data
 ## A Demo of What One Can Do When Overengineering a Simple Problem & Really Wanting a Job
 
