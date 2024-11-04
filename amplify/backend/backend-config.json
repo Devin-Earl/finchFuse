@@ -70,5 +70,71 @@
       "providerPlugin": "awscloudformation",
       "service": "S3AndCloudFront"
     }
+  },
+  "parameters": {
+    "AMPLIFY_function_fetchFinchData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenBotsford": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenHettinger": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenKemmer": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenKonopelski": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenMosciski": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenWolff": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    }
   }
 }

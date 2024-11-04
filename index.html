@@ -4,96 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinchFrontend Dashboard</title>
-    <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./src/style.css">
-    <script type="module">
-        import { Auth } from 'aws-amplify';
-        import awsExports from './aws-exports.js';
-        Amplify.configure(awsExports);
-
-        // Redirect to login page if not authenticated
-        async function checkAuth() {
-            try {
-                await Auth.currentAuthenticatedUser();
-                // User is authenticated; continue loading the page
-            } catch {
-                // User is not authenticated; redirect to login.html
-                window.location.href = './src/login.html';
-            }
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Style for the loading screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
-
-        // Run the authentication check on page load
-        checkAuth();
-    </script>
+    </style>
 </head>
 <body class="container my-4">
 
-    <!-- Dashboard Header -->
-    <div class="text-center mb-4">
-        <h1>FinchFuse: Data Display On Demand</h1>
-    </div>
-    <!-- Navigation Links -->
-    <div class="text-center mb-4">
-        <a href="./src/about.html" class="btn btn-info mr-2">About This App</a>
-        <a href="./src/login.html" class="btn btn-secondary">Login</a>
-    </div>
-
-    <!-- Help Text Box -->
-    <div class="alert alert-info" role="alert">
-        <h4 class="alert-heading">How it Works</h4>
-        <p>Select a provider from the dropdown menu and choose a data type (Employer or Individual) to fetch information. The data will be displayed in the table below. This dashboard connects to the Finch API to retrieve real-time data based on your selections.</p>
-    </div>
-
-    <!-- Provider and Data Type Selection -->
-    <div class="form-row mb-3">
-        <div class="form-group col-md-6">
-            <label for="providerSelect">Select Provider:</label>
-            <select id="providerSelect" class="form-control">
-                <option value="" disabled selected>Select a provider</option>
-                <!-- Sample Provider Options -->
-                <option value="provider1">Provider 1</option>
-                <option value="provider2">Provider 2</option>
-                <option value="provider3">Provider 3</option>
-                <option value="provider4">Provider 4</option>
-                <option value="provider5">Provider 5</option>
-                <option value="provider6">Provider 6</option>
-                <option value="provider7">Provider 7</option>
-                <option value="provider8">Provider 8</option>
-                <option value="provider9">Provider 9</option>
-                <option value="provider10">Provider 10</option>
-            </select>
-        </div>
-        <div class="form-group col-md-6">
-            <label for="dataTypeSelect">Select Data Type:</label>
-            <select id="dataTypeSelect" class="form-control">
-                <option value="" disabled selected>Select data type</option>
-                <option value="employer">Employer</option>
-                <option value="individual">Individual</option>
-            </select>
+    <!-- Loading screen, initially visible -->
+    <div id="loadingScreen">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
     </div>
 
-    <!-- Fetch Data Button -->
-    <div class="text-center mb-3">
-        <button class="btn btn-primary" onclick="fetchData()">Fetch Data</button>
-    </div>
+    <!-- Main app content, initially hidden -->
+    <div id="appContent" style="display: none;">
+        <!-- User Greeting Display in the top-right corner -->
+        <div class="text-right mb-4">
+            <span id="userInfo" class="text-secondary">Hello, User</span>
+        </div>
 
-    <!-- Data Display Table -->
-    <div id="dataDisplay" class="mt-4">
-        <table id="dataTable" class="table table-bordered table-striped" style="display:none;">
-            <thead class="thead-dark">
-                <tr id="tableHeaders"></tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-        <p id="errorMessage" class="text-danger" style="display:none;"></p>
+        <!-- Dashboard Header -->
+        <div class="text-center mb-4">
+            <h1>FinchFuse: Data Display On Demand</h1>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="text-center mb-4">
+            <a href="about.html" class="btn btn-info mr-2">About This App</a>
+            <a href="login.html" class="btn btn-secondary">Login</a>
+        </div>
+
+        <!-- Help Text Box and other content go here -->
+        <!-- ... [remaining app content] ... -->
     </div>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="./src/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="bundle.js"></script>
 </body>
 </html>

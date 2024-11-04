@@ -6,8 +6,8 @@
   "javascript": {
     "framework": "none",
     "config": {
-      "SourceDir": "/src",
-      "DistributionDir": "/",
+      "SourceDir": "/dist",
+      "DistributionDir": "/dist",
       "BuildCommand": "npm run build",
       "StartCommand": "npm run start"
     }
