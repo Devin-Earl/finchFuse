@@ -20,6 +20,20 @@
             justify-content: center;
             z-index: 1000;
         }
+        /* Collapsible info box styling */
+        .info-box {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #e9ecef;
+        }
+        /* Nav Header Styling */
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body class="container my-4">
@@ -32,25 +46,105 @@
     </div>
 
     <!-- Main app content, initially hidden -->
-    <div id="appContent" style="display: none;">
-        <!-- User Greeting Display in the top-right corner -->
-        <div class="text-right mb-4">
-            <span id="userInfo" class="text-secondary">Hello, User</span>
+    <div id="appContent">
+        <!-- Navigation Header with User Greeting and Logout -->
+        <div class="nav-header mb-4">
+            <div>
+                <h3>FinchFuse Dashboard</h3>
+            </div>
+            <div>
+                <span id="userInfo" class="text-secondary">Hello, User</span>
+                <button id="logoutButton" class="btn btn-outline-danger btn-sm ml-2">Logout</button>
+            </div>
         </div>
 
-        <!-- Dashboard Header -->
-        <div class="text-center mb-4">
-            <h1>FinchFuse: Data Display On Demand</h1>
+        <!-- Collapsible Info Box -->
+        <div class="info-box">
+            <h5>
+                How This Works
+                <button class="btn btn-link p-0 ml-2" type="button" data-toggle="collapse" data-target="#infoDetails" aria-expanded="false" aria-controls="infoDetails">
+                    (Show/Hide)
+                </button>
+            </h5>
+            <div class="collapse" id="infoDetails">
+                <p>This dashboard allows you to view detailed information about companies and their employees. To get started:</p>
+                <ul>
+                    <li>Select a company from the dropdown to view its information.</li>
+                    <li>Then, choose an employee from the directory to see their details.</li>
+                    <li>Use the Logout button to end your session securely.</li>
+                </ul>
+            </div>
         </div>
 
-        <!-- Navigation Links -->
-        <div class="text-center mb-4">
-            <a href="about.html" class="btn btn-info mr-2">About This App</a>
-            <a href="login.html" class="btn btn-secondary">Login</a>
+        <!-- Provider and Data Type Selection -->
+        <div class="form-row mb-3">
+            <div class="form-group col-md-6">
+                <label for="providerSelect">Select Company:</label>
+                <select id="providerSelect" class="form-control">
+                    <option value="" disabled selected>Select a company</option>
+                    <option value="provider1">Provider 1</option>
+                    <option value="provider2">Provider 2</option>
+                    <option value="provider3">Provider 3</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="dataTypeSelect">Select Data Type:</label>
+                <select id="dataTypeSelect" class="form-control">
+                    <option value="" disabled selected>Select data type</option>
+                    <option value="company">Company Info</option>
+                    <option value="employee">Employee Directory</option>
+                </select>
+            </div>
         </div>
 
-        <!-- Help Text Box and other content go here -->
-        <!-- ... [remaining app content] ... -->
+        <!-- Company Info Section -->
+        <div id="companyInfo" class="mt-4">
+            <h3>Company Information</h3>
+            <table class="table table-bordered">
+                <tbody id="companyDetails">
+                    <tr>
+                        <th>Company Name</th>
+                        <td>Placeholder Company Name</td>
+                    </tr>
+                    <tr>
+                        <th>Industry</th>
+                        <td>Placeholder Industry</td>
+                    </tr>
+                    <tr>
+                        <th>Size</th>
+                        <td>Placeholder Size</td>
+                    </tr>
+                    <tr>
+                        <th>Location</th>
+                        <td>Placeholder Location</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Employee Selection Section -->
+        <div class="mt-4">
+            <h3>Select Employee</h3>
+            <select id="employeeSelect" class="form-control mb-3">
+                <option value="" disabled selected>Select an employee</option>
+                <option value="employee1">Employee 1</option>
+                <option value="employee2">Employee 2</option>
+            </select>
+        </div>
+
+        <!-- Employee Details Section -->
+        <div id="employeeDetails" class="mt-4">
+            <h3>Employee Details</h3>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Employee Name: Placeholder Name</h5>
+                    <p class="card-text"><strong>Role:</strong> Placeholder Role</p>
+                    <p class="card-text"><strong>Department:</strong> Placeholder Department</p>
+                    <p class="card-text"><strong>Employment Status:</strong> Placeholder Status</p>
+                    <p class="card-text"><strong>Location:</strong> Placeholder Location</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- JavaScript Libraries -->
