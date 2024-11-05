@@ -47,12 +47,6 @@
             margin-top: 1.5rem;
         }
 
-        .table-placeholder {
-            background-color: #f8f9fa;
-            text-align: center;
-            color: #6c757d;
-        }
-
         /* Sidebar for Employee Directory */
         .employee-sidebar {
             max-height: 500px;
@@ -93,32 +87,20 @@
             <div class="collapse" id="infoDetails">
                 <p>This dashboard allows you to view detailed information about companies and their employees. To get started:</p>
                 <ul>
-                    <li>Select a company from the dropdown to view its information.</li>
-                    <li>Then, choose an employee from the directory to see their details.</li>
+                    <li>Select a company from the dropdown to view its information and employee directory.</li>
+                    <li>Choose an employee from the directory to see their details.</li>
                     <li>Use the Logout button to end your session securely.</li>
                 </ul>
             </div>
         </div>
 
-        <!-- Provider and Data Type Selection -->
-        <div class="form-row mb-3">
-            <div class="form-group col-md-6">
-                <label for="providerSelect">Select Company:</label>
-                <select id="providerSelect" class="form-control">
-                    <option value="" disabled selected>Select a company</option>
-                    <option value="provider1">Provider 1</option>
-                    <option value="provider2">Provider 2</option>
-                    <option value="provider3">Provider 3</option>
-                </select>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="dataTypeSelect">Select Data Type:</label>
-                <select id="dataTypeSelect" class="form-control">
-                    <option value="" disabled selected>Select data type</option>
-                    <option value="company">Company Info</option>
-                    <option value="directory">Employee Directory</option>
-                </select>
-            </div>
+        <!-- Company Selection -->
+        <div class="form-group mb-4">
+            <label for="providerSelect">Select Company:</label>
+            <select id="providerSelect" class="form-control">
+                <option value="" disabled selected>Select a company</option>
+                <!-- Options will be dynamically populated based on user's Cognito group -->
+            </select>
         </div>
 
         <!-- Company Information Section -->
@@ -140,8 +122,6 @@
                 <h3 class="section-title">Employee Directory</h3>
                 <ul id="employeeList" class="list-group">
                     <!-- Employee list will be dynamically populated here -->
-                    <li class="list-group-item">Employee 1</li>
-                    <li class="list-group-item">Employee 2</li>
                 </ul>
             </div>
             <div class="col-md-8">
@@ -149,11 +129,14 @@
                     <h3 class="section-title">Employee Details</h3>
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Employee Name: Data Not Provided or Blank</h5>
-                            <p class="card-text"><strong>Role:</strong> Data Not Provided or Blank</p>
-                            <p class="card-text"><strong>Department:</strong> Data Not Provided or Blank</p>
-                            <p class="card-text"><strong>Employment Status:</strong> Data Not Provided or Blank</p>
-                            <p class="card-text"><strong>Location:</strong> Data Not Provided or Blank</p>
+                            <h5 class="card-title" id="employeeName">Employee Name: Data Not Provided or Blank</h5>
+                            <p class="card-text"><strong>Preferred Name:</strong> <span id="preferredName">Data Not Provided or Blank</span></p>
+                            <p class="card-text"><strong>Email(s):</strong> <span id="emails">Data Not Provided or Blank</span></p>
+                            <p class="card-text"><strong>Phone Number(s):</strong> <span id="phoneNumbers">Data Not Provided or Blank</span></p>
+                            <p class="card-text"><strong>Gender:</strong> <span id="gender">Data Not Provided or Blank</span></p>
+                            <p class="card-text"><strong>Date of Birth:</strong> <span id="dob">Data Not Provided or Blank</span></p>
+                            <p class="card-text"><strong>Residence:</strong> <span id="residence">Data Not Provided or Blank</span></p>
+                            <p class="card-text"><strong>Ethnicity:</strong> <span id="ethnicity">Data Not Provided or Blank</span></p>
                         </div>
                     </div>
                 </div>

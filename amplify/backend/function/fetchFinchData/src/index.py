@@ -59,6 +59,19 @@ def fetch_employment_data(token, individual_id):
     return error_logic(response)
 
 def lambda_handler(event, context):
+    # Check if the request method is OPTIONS for CORS preflight
+    if event['httpMethod'] == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',  # Adjust this to restrict origins if needed
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+            },
+            'body': json.dumps({"message": "CORS preflight success"})
+        }
+
+    # Get the token from the Authorization header
     token = event['headers'].get('Authorization', '').split(' ')[1]
     decoded_token = jwt.decode(token, options={"verify_signature": False})  # Skip signature verification for testing
     
@@ -69,10 +82,16 @@ def lambda_handler(event, context):
     data_type = event['queryStringParameters'].get('dataType', '').lower()
     individual_id = event['queryStringParameters'].get('individualId')
 
+    # Access control for non-admin users
     if not is_admin and provider not in STANDARD_USER_ACCESS:
         logger.error("Access denied: User does not have access to this provider.")
         return {
             'statusCode': 403,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+            },
             'body': json.dumps({"error": "Access denied to this provider"})
         }
 
@@ -82,6 +101,11 @@ def lambda_handler(event, context):
         logger.error("Invalid provider or missing access token.")
         return {
             'statusCode': 400,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+            },
             'body': json.dumps({"error": "Invalid provider or missing access token"})
         }
 
@@ -99,16 +123,31 @@ def lambda_handler(event, context):
             logger.error("Invalid data type or missing individual ID.")
             return {
                 'statusCode': 400,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+                },
                 'body': json.dumps({"error": "Invalid data type or missing individual ID"})
             }
 
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+            },
             'body': json.dumps(data)
         }
     except requests.exceptions.RequestException as e:
         logger.exception("Request Failed")
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+            },
             'body': json.dumps({"error": str(e)})
         }
