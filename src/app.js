@@ -268,7 +268,6 @@ function populateEmployeeDetails(data) {
         document.getElementById(id).textContent = details[id];
     });
 }
-
 // Initialize authentication and user info display
 if (!localStorage.getItem('authCheckCompleted')) {
     checkAuth();
