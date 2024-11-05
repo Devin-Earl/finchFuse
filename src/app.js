@@ -9,13 +9,21 @@ const STANDARD_COMPANIES = ["MOSCISKI", "HETTINGER"];
 document.addEventListener("DOMContentLoaded", hideSections);
 
 function hideSections() {
-    console.log("Hiding sections initially");
     document.getElementById('companyInfo').style.display = 'none';
     document.getElementById('employeeDetails').style.display = 'none';
     document.querySelector('.employee-sidebar').style.display = 'none'; // Hide employee directory initially
 }
 
-// Helper function to normalize company names to title case
+// Helper function to normalize text: replaces underscores with spaces, capitalizes, trims
+function normalizeText(text) {
+    return text
+        .replace(/_/g, ' ')
+        .toLowerCase()
+        .replace(/\b\w/g, char => char.toUpperCase())
+        .trim();
+}
+
+// Normalize company names to title case
 function normalizeCompanyName(name) {
     return name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
 }
@@ -59,7 +67,6 @@ async function checkAuth() {
             displayUserInfo();
             loadCompanyOptions();
         } catch (error) {
-            console.log("User is not authenticated. Redirecting to Cognito Hosted UI.");
             redirectToLogin();
         }
     }
@@ -69,10 +76,6 @@ async function checkAuth() {
 async function displayUserInfo() {
     try {
         const token = localStorage.getItem('idToken');
-        if (!token) {
-            console.error("No idToken found for decoding user info.");
-            return;
-        }
         const decodedToken = window.jwt_decode(token);
         const name = decodedToken.name || null;
         const email = decodedToken.email || null;
@@ -88,7 +91,6 @@ function redirectToLogin() {
     const domain = awsExports.oauth.domain.startsWith('https://') ? awsExports.oauth.domain : `https://${awsExports.oauth.domain}`;
     const redirectUri = awsExports.oauth.redirectSignIn.startsWith('https://') ? awsExports.oauth.redirectSignIn : `https://${awsExports.oauth.redirectSignIn}`;
     const loginUrl = `${domain}/login?client_id=${awsExports.aws_user_pools_web_client_id}&response_type=token&scope=email+openid+profile&redirect_uri=${redirectUri}`;
-    console.log(`Redirecting to login at: ${loginUrl}`);
     window.location.href = loginUrl;
 }
 
@@ -121,6 +123,7 @@ document.getElementById('providerSelect').addEventListener('change', async funct
     if (company) {
         await fetchCompanyData(company);
         await fetchEmployeeDirectory(company);
+        document.getElementById('employeeList').scrollTop = 0; // Reset scroll position
     }
 });
 
@@ -148,11 +151,11 @@ function populateCompanyInfo(data) {
     const companyDetails = document.getElementById('companyDetails');
     companyDetails.innerHTML = '';
     const info = [
-        { label: "Company Name", value: data.legal_name || "Data Not Provided or Blank" },
-        { label: "Industry", value: data.entity?.type || "Data Not Provided or Blank" },
-        { label: "Subtype", value: data.entity?.subtype || "Data Not Provided or Blank" },
-        { label: "Primary Email", value: data.primary_email || "Data Not Provided or Blank" },
-        { label: "Primary Phone Number", value: data.primary_phone_number || "Data Not Provided or Blank" },
+        { label: "Company Name", value: normalizeText(data.legal_name || "Data Not Provided or Blank") },
+        { label: "Industry", value: normalizeText(data.entity?.type || "Data Not Provided or Blank") },
+        { label: "Subtype", value: normalizeText(data.entity?.subtype || "Data Not Provided or Blank") },
+        { label: "Primary Email", value: normalizeText(data.primary_email || "Data Not Provided or Blank") },
+        { label: "Primary Phone Number", value: normalizeText(data.primary_phone_number || "Data Not Provided or Blank") },
     ];
 
     info.forEach(({ label, value }) => {
@@ -188,7 +191,7 @@ function populateEmployeeList(individuals) {
     individuals.forEach(individual => {
         const listItem = document.createElement('li');
         listItem.classList.add('list-group-item');
-        listItem.textContent = `${individual.first_name} ${individual.last_name}`;
+        listItem.textContent = normalizeText(`${individual.first_name} ${individual.last_name}`);
         listItem.dataset.id = individual.id;
         listItem.addEventListener('click', () => fetchEmployeeDetails(individual.id));
         employeeList.appendChild(listItem);
@@ -199,35 +202,18 @@ function populateEmployeeList(individuals) {
 async function fetchEmployeeDetails(employeeId) {
     const token = localStorage.getItem('idToken');
     const company = document.getElementById('providerSelect').value;
-
-    // Construct the payload as per Finch's documentation
-    const payload = JSON.stringify({
-        requests: [
-            { individual_id: employeeId }
-        ]
-    });
-
-    // Log payload and headers for debugging
-    console.log("Sending request for employee details:", payload);
-    
     try {
         const response = await fetch(`https://api.finchdemo.perilabs.io/finchdata?provider=${company}&dataType=individual`, {
             method: 'POST',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json"
-            },
-            body: payload
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ requests: [{ individual_id: employeeId }] })
         });
-
         const data = await response.json();
-
         if (response.ok) {
-            console.log("Employee details fetched successfully:", data);
-            populateEmployeeDetails(data.responses[0]?.body || {});
+            populateEmployeeDetails(data.responses[0].body);
             showEmployeeDetails();
         } else {
-            console.error("Error fetching employee details:", data.error, "Response:", data);
+            console.error("Error fetching employee details:", data.error);
         }
     } catch (error) {
         console.error("Error fetching employee details:", error);
@@ -236,16 +222,26 @@ async function fetchEmployeeDetails(employeeId) {
 
 // Populate Employee Details
 function populateEmployeeDetails(data) {
-    document.getElementById('employeeName').textContent = `Employee Name: ${data.first_name} ${data.last_name}`;
-    document.getElementById('preferredName').textContent = data.preferred_name || "Data Not Provided or Blank";
-    document.getElementById('emails').textContent = data.emails?.map(e => e.data).join(", ") || "Data Not Provided or Blank";
-    document.getElementById('phoneNumbers').textContent = data.phone_numbers || "Data Not Provided or Blank";
-    document.getElementById('gender').textContent = data.gender || "Data Not Provided or Blank";
-    document.getElementById('dob').textContent = data.dob || "Data Not Provided or Blank";
-    document.getElementById('residence').textContent = data.residence || "Data Not Provided or Blank";
-    document.getElementById('ethnicity').textContent = data.ethnicity || "Data Not Provided or Blank";
-}
+    document.getElementById('employeeName').textContent = `Employee Name: ${normalizeText(data.first_name)} ${normalizeText(data.last_name)}`;
+    document.getElementById('preferredName').textContent = normalizeText(data.preferred_name || "Data Not Provided or Blank");
 
+    // Handle emails array
+    const emails = data.emails && Array.isArray(data.emails)
+        ? data.emails.map(emailObj => emailObj.data).join(", ")
+        : "Data Not Provided or Blank";
+    document.getElementById('emails').textContent = emails;
+
+    // Handle phone numbers array
+    const phoneNumbers = data.phone_numbers && Array.isArray(data.phone_numbers)
+        ? data.phone_numbers.map(phoneObj => phoneObj.data).join(", ")
+        : "Data Not Provided or Blank";
+    document.getElementById('phoneNumbers').textContent = phoneNumbers;
+
+    document.getElementById('gender').textContent = normalizeText(data.gender || "Data Not Provided or Blank");
+    document.getElementById('dob').textContent = normalizeText(data.dob || "Data Not Provided or Blank");
+    document.getElementById('residence').textContent = normalizeText(data.residence || "Data Not Provided or Blank");
+    document.getElementById('ethnicity').textContent = normalizeText(data.ethnicity || "Data Not Provided or Blank");
+}
 // Initialize authentication and user info display
 if (!localStorage.getItem('authCheckCompleted')) {
     checkAuth();
