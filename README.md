@@ -31,7 +31,7 @@ Yet again, another fantastic question! Take a look at the architecture diagram b
 
 ![Architecture Diagram](./finchFuse%20Architecture%20Diag.png)
 
-_Standard Questions_
+_Questions_
 
 Below are some frequently asked questions regarding this solution and best practices:
 
@@ -51,5 +51,5 @@ Below are some frequently asked questions regarding this solution and best pract
 
 4. **Given more time, what would you want to do to make it better?**
 
-   I would enhance the frontend with a dynamic, responsive UI, refine authentication with a more granular role-based access system, improve error handling and logging with structured logs, implement token refresh mechanisms for reliability, and potentially add a caching layer for frequently requested data.
+   I would work on the frontend and give it  a better UI refine authentication build a homegrown login instead of a Hosted UI, implement token refresh mechanisms for reliability, and potentially add a caching layer for frequently requested data.
 
