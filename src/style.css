@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.alert-heading {
+    font-size: 1.25em;
+}
+
+table {
+    margin-top: 20px;
+}
+
+#dataDisplay {
+    max-width: 80%;
+    margin: auto;
+}

@@ -1,0 +1,140 @@
+{
+  "api": {
+    "fetchFinchDataApi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "auth": {
+    "finchfuse7b37cb7e": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    },
+    "userPoolGroups": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID",
+            "IdentityPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "finchfuse7b37cb7e"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito-UserPool-Groups"
+    }
+  },
+  "function": {
+    "fetchFinchData": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "hosting": {
+    "S3AndCloudFront": {
+      "providerPlugin": "awscloudformation",
+      "service": "S3AndCloudFront"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_fetchFinchData_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenBotsford": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenHettinger": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenKemmer": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenKonopelski": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenMosciski": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_finchAccessTokenWolff": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    },
+    "AMPLIFY_function_fetchFinchData_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fetchFinchData"
+        }
+      ]
+    }
+  }
+}

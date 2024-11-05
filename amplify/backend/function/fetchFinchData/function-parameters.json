@@ -1,0 +1,29 @@
+{
+  "lambdaLayers": [],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "finchAccessTokenKonopelski",
+      "environmentVariableName": "FINCH_ACCESS_TOKEN_KONOPELSKI"
+    },
+    {
+      "cloudFormationParameterName": "finchAccessTokenHettinger",
+      "environmentVariableName": "FINCH_ACCESS_TOKEN_HETTINGER"
+    },
+    {
+      "cloudFormationParameterName": "finchAccessTokenWolff",
+      "environmentVariableName": "FINCH_ACCESS_TOKEN_WOLFF"
+    },
+    {
+      "cloudFormationParameterName": "finchAccessTokenMosciski",
+      "environmentVariableName": "FINCH_ACCESS_TOKEN_MOSCISKI"
+    },
+    {
+      "cloudFormationParameterName": "finchAccessTokenBotsford",
+      "environmentVariableName": "FINCH_ACCESS_TOKEN_BOTSFORD"
+    },
+    {
+      "cloudFormationParameterName": "finchAccessTokenKemmer",
+      "environmentVariableName": "FINCH_ACCESS_TOKEN_KEMMER"
+    }
+  ]
+}

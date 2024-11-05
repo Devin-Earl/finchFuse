@@ -1,0 +1,39 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-finchfuse-dev-622ef-authRole",
+      "UnauthRoleArn": "arn:aws:iam::980921744904:role/amplify-finchfuse-dev-622ef-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::980921744904:role/amplify-finchfuse-dev-622ef-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-finchfuse-dev-622ef-deployment",
+      "UnauthRoleName": "amplify-finchfuse-dev-622ef-unauthRole",
+      "StackName": "amplify-finchfuse-dev-622ef",
+      "StackId": "arn:aws:cloudformation:us-east-1:980921744904:stack/amplify-finchfuse-dev-622ef/074bcfa0-9935-11ef-950b-1256d4f2c743",
+      "AmplifyAppId": "d16g8ht1k15c0o"
+    },
+    "categories": {
+      "hosting": {
+        "S3AndCloudFront": {}
+      },
+      "function": {
+        "fetchFinchData": {
+          "finchAccessTokenKonopelski": "32b075ef-63ab-4a85-82d4-8acea20720a2",
+          "finchAccessTokenHettinger": "e2522c74-200f-44cc-8f78-ab4a6db18346",
+          "finchAccessTokenWolff": "58ebb264-5a0a-4d97-833c-1f5cd7ac0aa6",
+          "finchAccessTokenMosciski": "8c164e29-5f4b-4e13-985a-3b047bb8358b",
+          "finchAccessTokenBotsford": "79d4f8b9-cde3-422a-9bfc-67a4430e9287",
+          "finchAccessTokenKemmer": "72c2a074-44f2-4b9e-9687-975b04d26691",
+          "deploymentBucketName": "amplify-finchfuse-dev-622ef-deployment",
+          "s3Key": "amplify-builds/fetchFinchData-453946794a466269726d-build.zip"
+        }
+      },
+      "api": {
+        "fetchFinchDataApi": {}
+      },
+      "auth": {
+        "finchfuse7b37cb7e": {},
+        "userPoolGroups": {}
+      }
+    }
+  }
+}
