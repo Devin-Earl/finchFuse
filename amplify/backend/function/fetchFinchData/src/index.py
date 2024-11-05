@@ -59,19 +59,19 @@ def fetch_employment_data(token, individual_id):
     return error_logic(response)
 
 def lambda_handler(event, context):
-    # Handle CORS preflight
+    
     if event['httpMethod'] == 'OPTIONS':
         return {
             'statusCode': 200,
             'headers': {
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': 'https://finchdemo.perilabs.io/',
                 'Access-Control-Allow-Headers': 'Content-Type,Authorization',
                 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
             },
             'body': json.dumps({"message": "CORS preflight success"})
         }
 
-    # Authorization token extraction and decoding
+    
     token = event['headers'].get('Authorization', '').split(' ')[1]
     decoded_token = jwt.decode(token, options={"verify_signature": False})
 
@@ -81,20 +81,20 @@ def lambda_handler(event, context):
     provider = event['queryStringParameters'].get('provider', '').upper()
     data_type = event['queryStringParameters'].get('dataType', '').lower()
 
-    # Check if user has access
+    
     if not is_admin and provider not in STANDARD_USER_ACCESS:
         logger.error("Access denied: User does not have access to this provider.")
         return {
             'statusCode': 403,
             'headers': {
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': 'https://finchdemo.perilabs.io/',
                 'Access-Control-Allow-Headers': 'Content-Type,Authorization',
                 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
             },
             'body': json.dumps({"error": "Access denied to this provider"})
         }
 
-    # Get the provider's access token from environment variables
+    
     access_token = os.getenv(f"FINCH_ACCESS_TOKEN_{provider}")
     if not access_token:
         logger.error("Invalid provider or missing access token.")
@@ -108,13 +108,13 @@ def lambda_handler(event, context):
             'body': json.dumps({"error": "Invalid provider or missing access token"})
         }
 
-    # Parse the body if dataType is individual
+    
     individual_id = None
     if data_type == "individual" or data_type == "employment":
         body = json.loads(event.get('body', '{}'))
         individual_id = body.get("requests", [{}])[0].get("individual_id")
 
-    # Fetch the requested data based on data type
+    
     try:
         if data_type == "company":
             data = fetch_company_data(access_token)
