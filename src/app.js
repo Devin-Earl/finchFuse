@@ -3,30 +3,31 @@ import awsExports from './aws-exports';
 
 Amplify.configure(awsExports);
 
-// Removed the import statement for jwt-decode, since we’re using the CDN.
-
 async function checkAuth() {
+    console.log("Starting authentication check...");
+
+    // Check if authentication was already completed in this session
     if (localStorage.getItem('authCheckCompleted')) {
         showAppContent();
         displayUserInfo();
         return;
     }
 
-    console.log("Starting authentication check...");
     const urlParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = urlParams.get('access_token');
+    const idToken = urlParams.get('id_token');  // Retrieve idToken from URL hash
 
-    if (accessToken) {
-        localStorage.setItem('accessToken', accessToken);
+    if (idToken) {
+        // Store idToken and clear URL hash
+        localStorage.setItem('idToken', idToken);
         window.history.replaceState({}, document.title, window.location.pathname);
         localStorage.setItem('authCheckCompleted', 'true');
         showAppContent();
-        displayUserInfo();
+        displayUserInfo();  // Only called after token is stored
     } else {
         try {
             const session = await Auth.currentSession();
-            const token = session.getAccessToken().getJwtToken();
-            localStorage.setItem('accessToken', token);
+            const token = session.getIdToken().getJwtToken();
+            localStorage.setItem('idToken', token);
             localStorage.setItem('authCheckCompleted', 'true');
             showAppContent();
             displayUserInfo();
@@ -39,19 +40,21 @@ async function checkAuth() {
 
 async function displayUserInfo() {
     try {
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('idToken');
         if (!token) {
-            console.error("No access token found for decoding user info.");
+            console.error("No idToken found for decoding user info.");
             return;
         }
 
-        const decodedToken = jwt_decode(token); // Use the global jwt_decode function
+        const decodedToken = jwt_decode(token);
         console.log("Decoded token:", decodedToken);
 
+        // Prioritize "name" attribute, then fallback to email or username
+        const name = decodedToken.name || null;
         const email = decodedToken.email || null;
         const username = decodedToken.username || decodedToken["cognito:username"] || "User";
 
-        document.getElementById('userInfo').textContent = `Hello, ${email || username}`;
+        document.getElementById('userInfo').textContent = `Hello, ${name || email || username}`;
     } catch (error) {
         console.error("Error fetching user info:", error);
     }
@@ -91,12 +94,12 @@ window.addEventListener("load", () => {
 });
 
 async function fetchData() {
-    let token = localStorage.getItem('accessToken');
+    let token = localStorage.getItem('idToken');  // Retrieve idToken for API calls
     if (!token) {
         try {
             const session = await Auth.currentSession();
-            token = session.getAccessToken().getJwtToken();
-            localStorage.setItem('accessToken', token);
+            token = session.getIdToken().getJwtToken();
+            localStorage.setItem('idToken', token);
         } catch (error) {
             console.error("No valid session found. Redirecting to login.");
             redirectToLogin();
@@ -125,7 +128,7 @@ async function fetchData() {
     try {
         const response = await fetch(`https://api.finchdemo.perilabs.io/finchdata?provider=${provider}&dataType=${dataType}`, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`  // Use idToken for Authorization header
             }
         });
 

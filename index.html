@@ -7,7 +7,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Style for the loading screen */
+        /* Style for loading screen */
         #loadingScreen {
             position: fixed;
             top: 0;
@@ -20,7 +20,8 @@
             justify-content: center;
             z-index: 1000;
         }
-        /* Collapsible info box styling */
+
+        /* Styling for collapsible info box */
         .info-box {
             border: 1px solid #ced4da;
             border-radius: 0.25rem;
@@ -28,30 +29,45 @@
             margin-bottom: 1rem;
             background-color: #e9ecef;
         }
-        /* Nav Header Styling */
+
+        /* Header and Navigation Styling */
         .nav-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+
+        /* Styling for data sections */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+        }
+
+        .table-placeholder {
+            background-color: #f8f9fa;
+            text-align: center;
+            color: #6c757d;
         }
     </style>
 </head>
 <body class="container my-4">
 
-    <!-- Loading screen, initially visible -->
+    <!-- Loading Screen -->
     <div id="loadingScreen">
         <div class="spinner-border text-primary" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
 
-    <!-- Main app content, initially hidden -->
-    <div id="appContent">
-        <!-- Navigation Header with User Greeting and Logout -->
-        <div class="nav-header mb-4">
-            <div>
-                <h3>FinchFuse Dashboard</h3>
-            </div>
+    <!-- Main App Content -->
+    <div id="appContent" style="display: none;">
+        <!-- Navigation Header with User Greeting and Logout Button -->
+        <div class="nav-header">
+            <h3>FinchFuse Dashboard</h3>
             <div>
                 <span id="userInfo" class="text-secondary">Hello, User</span>
                 <button id="logoutButton" class="btn btn-outline-danger btn-sm ml-2">Logout</button>
@@ -97,34 +113,22 @@
             </div>
         </div>
 
-        <!-- Company Info Section -->
+        <!-- Company Information Section -->
         <div id="companyInfo" class="mt-4">
-            <h3>Company Information</h3>
+            <h3 class="section-title">Company Information</h3>
             <table class="table table-bordered">
                 <tbody id="companyDetails">
-                    <tr>
-                        <th>Company Name</th>
-                        <td>Placeholder Company Name</td>
-                    </tr>
-                    <tr>
-                        <th>Industry</th>
-                        <td>Placeholder Industry</td>
-                    </tr>
-                    <tr>
-                        <th>Size</th>
-                        <td>Placeholder Size</td>
-                    </tr>
-                    <tr>
-                        <th>Location</th>
-                        <td>Placeholder Location</td>
-                    </tr>
+                    <tr><th>Company Name</th><td>Data Not Provided or Blank</td></tr>
+                    <tr><th>Industry</th><td>Data Not Provided or Blank</td></tr>
+                    <tr><th>Size</th><td>Data Not Provided or Blank</td></tr>
+                    <tr><th>Location</th><td>Data Not Provided or Blank</td></tr>
                 </tbody>
             </table>
         </div>
 
         <!-- Employee Selection Section -->
-        <div class="mt-4">
-            <h3>Select Employee</h3>
+        <div id="employeeSelection" class="mt-4">
+            <h3 class="section-title">Select Employee</h3>
             <select id="employeeSelect" class="form-control mb-3">
                 <option value="" disabled selected>Select an employee</option>
                 <option value="employee1">Employee 1</option>
@@ -134,14 +138,14 @@
 
         <!-- Employee Details Section -->
         <div id="employeeDetails" class="mt-4">
-            <h3>Employee Details</h3>
+            <h3 class="section-title">Employee Details</h3>
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Employee Name: Placeholder Name</h5>
-                    <p class="card-text"><strong>Role:</strong> Placeholder Role</p>
-                    <p class="card-text"><strong>Department:</strong> Placeholder Department</p>
-                    <p class="card-text"><strong>Employment Status:</strong> Placeholder Status</p>
-                    <p class="card-text"><strong>Location:</strong> Placeholder Location</p>
+                    <h5 class="card-title">Employee Name: Data Not Provided or Blank</h5>
+                    <p class="card-text"><strong>Role:</strong> Data Not Provided or Blank</p>
+                    <p class="card-text"><strong>Department:</strong> Data Not Provided or Blank</p>
+                    <p class="card-text"><strong>Employment Status:</strong> Data Not Provided or Blank</p>
+                    <p class="card-text"><strong>Location:</strong> Data Not Provided or Blank</p>
                 </div>
             </div>
         </div>
