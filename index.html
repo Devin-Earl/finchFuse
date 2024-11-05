@@ -52,6 +52,14 @@
             text-align: center;
             color: #6c757d;
         }
+
+        /* Sidebar for Employee Directory */
+        .employee-sidebar {
+            max-height: 500px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+            padding-right: 15px;
+        }
     </style>
 </head>
 <body class="container my-4">
@@ -108,7 +116,7 @@
                 <select id="dataTypeSelect" class="form-control">
                     <option value="" disabled selected>Select data type</option>
                     <option value="company">Company Info</option>
-                    <option value="employee">Employee Directory</option>
+                    <option value="directory">Employee Directory</option>
                 </select>
             </div>
         </div>
@@ -126,26 +134,28 @@
             </table>
         </div>
 
-        <!-- Employee Selection Section -->
-        <div id="employeeSelection" class="mt-4">
-            <h3 class="section-title">Select Employee</h3>
-            <select id="employeeSelect" class="form-control mb-3">
-                <option value="" disabled selected>Select an employee</option>
-                <option value="employee1">Employee 1</option>
-                <option value="employee2">Employee 2</option>
-            </select>
-        </div>
-
-        <!-- Employee Details Section -->
-        <div id="employeeDetails" class="mt-4">
-            <h3 class="section-title">Employee Details</h3>
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Employee Name: Data Not Provided or Blank</h5>
-                    <p class="card-text"><strong>Role:</strong> Data Not Provided or Blank</p>
-                    <p class="card-text"><strong>Department:</strong> Data Not Provided or Blank</p>
-                    <p class="card-text"><strong>Employment Status:</strong> Data Not Provided or Blank</p>
-                    <p class="card-text"><strong>Location:</strong> Data Not Provided or Blank</p>
+        <!-- Employee Directory and Details Section -->
+        <div class="row mt-4">
+            <div class="col-md-4 employee-sidebar">
+                <h3 class="section-title">Employee Directory</h3>
+                <ul id="employeeList" class="list-group">
+                    <!-- Employee list will be dynamically populated here -->
+                    <li class="list-group-item">Employee 1</li>
+                    <li class="list-group-item">Employee 2</li>
+                </ul>
+            </div>
+            <div class="col-md-8">
+                <div id="employeeDetails" class="mt-4">
+                    <h3 class="section-title">Employee Details</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Employee Name: Data Not Provided or Blank</h5>
+                            <p class="card-text"><strong>Role:</strong> Data Not Provided or Blank</p>
+                            <p class="card-text"><strong>Department:</strong> Data Not Provided or Blank</p>
+                            <p class="card-text"><strong>Employment Status:</strong> Data Not Provided or Blank</p>
+                            <p class="card-text"><strong>Location:</strong> Data Not Provided or Blank</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

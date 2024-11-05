@@ -45,7 +45,12 @@ def fetch_directory_data(token):
 
 def fetch_individual_data(token, individual_id):
     logger.info(f"Fetching individual data for individual ID: {individual_id}...")
-    response = requests.get(f"{BASE_URL}/employer/individuals/{individual_id}", headers=get_headers(token))
+    body = {
+        "requests": [
+            {"individual_id": individual_id}
+        ]
+    }
+    response = requests.post(f"{BASE_URL}/employer/individual", headers=get_headers(token), json=body)
     return error_logic(response)
 
 def fetch_employment_data(token, individual_id):
@@ -60,12 +65,10 @@ def lambda_handler(event, context):
     user_groups = decoded_token.get("cognito:groups", [])
     is_admin = "admin" in user_groups
     
-   
     provider = event['queryStringParameters'].get('provider', '').upper()
     data_type = event['queryStringParameters'].get('dataType', '').lower()
     individual_id = event['queryStringParameters'].get('individualId')
 
-    
     if not is_admin and provider not in STANDARD_USER_ACCESS:
         logger.error("Access denied: User does not have access to this provider.")
         return {
