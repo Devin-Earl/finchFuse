@@ -59,30 +59,29 @@ def fetch_employment_data(token, individual_id):
     return error_logic(response)
 
 def lambda_handler(event, context):
-    # Check if the request method is OPTIONS for CORS preflight
+    # Handle CORS preflight
     if event['httpMethod'] == 'OPTIONS':
         return {
             'statusCode': 200,
             'headers': {
-                'Access-Control-Allow-Origin': '*',  # Adjust this to restrict origins if needed
+                'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Headers': 'Content-Type,Authorization',
                 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
             },
             'body': json.dumps({"message": "CORS preflight success"})
         }
 
-    # Get the token from the Authorization header
+    # Authorization token extraction and decoding
     token = event['headers'].get('Authorization', '').split(' ')[1]
-    decoded_token = jwt.decode(token, options={"verify_signature": False})  # Skip signature verification for testing
-    
+    decoded_token = jwt.decode(token, options={"verify_signature": False})
+
     user_groups = decoded_token.get("cognito:groups", [])
     is_admin = "admin" in user_groups
-    
+
     provider = event['queryStringParameters'].get('provider', '').upper()
     data_type = event['queryStringParameters'].get('dataType', '').lower()
-    individual_id = event['queryStringParameters'].get('individualId')
 
-    # Access control for non-admin users
+    # Check if user has access
     if not is_admin and provider not in STANDARD_USER_ACCESS:
         logger.error("Access denied: User does not have access to this provider.")
         return {
@@ -108,6 +107,12 @@ def lambda_handler(event, context):
             },
             'body': json.dumps({"error": "Invalid provider or missing access token"})
         }
+
+    # Parse the body if dataType is individual
+    individual_id = None
+    if data_type == "individual" or data_type == "employment":
+        body = json.loads(event.get('body', '{}'))
+        individual_id = body.get("requests", [{}])[0].get("individual_id")
 
     # Fetch the requested data based on data type
     try:

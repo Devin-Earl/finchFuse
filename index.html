@@ -99,12 +99,11 @@
             <label for="providerSelect">Select Company:</label>
             <select id="providerSelect" class="form-control">
                 <option value="" disabled selected>Select a company</option>
-                <!-- Options will be dynamically populated based on user's Cognito group -->
             </select>
         </div>
 
         <!-- Company Information Section -->
-        <div id="companyInfo" class="mt-4">
+        <div id="companyInfo" class="mt-4" style="display: none;">
             <h3 class="section-title">Company Information</h3>
             <table class="table table-bordered">
                 <tbody id="companyDetails">
@@ -118,14 +117,12 @@
 
         <!-- Employee Directory and Details Section -->
         <div class="row mt-4">
-            <div class="col-md-4 employee-sidebar">
-                <h3 class="section-title">Employee Directory</h3>
-                <ul id="employeeList" class="list-group">
-                    <!-- Employee list will be dynamically populated here -->
-                </ul>
+            <div class="col-md-4 employee-sidebar" style="display: none;">
+                <h3 id="employeeDirectoryHeader" class="section-title">Employee Directory</h3> <!-- Added ID here -->
+                <ul id="employeeList" class="list-group"></ul>
             </div>
             <div class="col-md-8">
-                <div id="employeeDetails" class="mt-4">
+                <div id="employeeDetails" class="mt-4" style="display: none;">
                     <h3 class="section-title">Employee Details</h3>
                     <div class="card">
                         <div class="card-body">
@@ -149,7 +146,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="bundle.js"></script>
 </body>
 </html>

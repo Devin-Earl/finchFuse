@@ -3,26 +3,52 @@ import awsExports from './aws-exports';
 
 Amplify.configure(awsExports);
 
-async function checkAuth() {
-    console.log("Starting authentication check...");
+const ADMIN_COMPANIES = ["botsford", "hettinger", "kemmer", "konopelski", "mosciski", "wolff"];
+const STANDARD_COMPANIES = ["MOSCISKI", "HETTINGER"];
 
-    // Check if authentication was already completed in this session
+document.addEventListener("DOMContentLoaded", hideSections);
+
+function hideSections() {
+    console.log("Hiding sections initially");
+    document.getElementById('companyInfo').style.display = 'none';
+    document.getElementById('employeeDetails').style.display = 'none';
+    document.querySelector('.employee-sidebar').style.display = 'none'; // Hide employee directory initially
+}
+
+// Helper function to normalize company names to title case
+function normalizeCompanyName(name) {
+    return name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+}
+
+function showCompanyInfo() {
+    document.getElementById('companyInfo').style.display = 'block';
+}
+
+function showEmployeeDirectory() {
+    document.querySelector('.employee-sidebar').style.display = 'block';
+}
+
+function showEmployeeDetails() {
+    document.getElementById('employeeDetails').style.display = 'block';
+}
+
+async function checkAuth() {
     if (localStorage.getItem('authCheckCompleted')) {
         showAppContent();
         displayUserInfo();
+        loadCompanyOptions();
         return;
     }
 
     const urlParams = new URLSearchParams(window.location.hash.substring(1));
-    const idToken = urlParams.get('id_token');  // Retrieve idToken from URL hash
-
+    const idToken = urlParams.get('id_token');
     if (idToken) {
-        // Store idToken and clear URL hash
         localStorage.setItem('idToken', idToken);
         window.history.replaceState({}, document.title, window.location.pathname);
         localStorage.setItem('authCheckCompleted', 'true');
         showAppContent();
-        displayUserInfo();  // Only called after token is stored
+        displayUserInfo();
+        loadCompanyOptions();
     } else {
         try {
             const session = await Auth.currentSession();
@@ -31,6 +57,7 @@ async function checkAuth() {
             localStorage.setItem('authCheckCompleted', 'true');
             showAppContent();
             displayUserInfo();
+            loadCompanyOptions();
         } catch (error) {
             console.log("User is not authenticated. Redirecting to Cognito Hosted UI.");
             redirectToLogin();
@@ -38,6 +65,7 @@ async function checkAuth() {
     }
 }
 
+// Display User Information
 async function displayUserInfo() {
     try {
         const token = localStorage.getItem('idToken');
@@ -45,130 +73,180 @@ async function displayUserInfo() {
             console.error("No idToken found for decoding user info.");
             return;
         }
-
-        const decodedToken = jwt_decode(token);
-        console.log("Decoded token:", decodedToken);
-
-        // Prioritize "name" attribute, then fallback to email or username
+        const decodedToken = window.jwt_decode(token);
         const name = decodedToken.name || null;
         const email = decodedToken.email || null;
         const username = decodedToken.username || decodedToken["cognito:username"] || "User";
-
         document.getElementById('userInfo').textContent = `Hello, ${name || email || username}`;
     } catch (error) {
         console.error("Error fetching user info:", error);
     }
 }
 
+// Redirect to Cognito Login
 function redirectToLogin() {
-    const domain = awsExports.oauth.domain.startsWith('https://')
-        ? awsExports.oauth.domain
-        : `https://${awsExports.oauth.domain}`;
-
-    const redirectUri = awsExports.oauth.redirectSignIn.startsWith('https://')
-        ? awsExports.oauth.redirectSignIn
-        : `https://${awsExports.oauth.redirectSignIn}`;
-
+    const domain = awsExports.oauth.domain.startsWith('https://') ? awsExports.oauth.domain : `https://${awsExports.oauth.domain}`;
+    const redirectUri = awsExports.oauth.redirectSignIn.startsWith('https://') ? awsExports.oauth.redirectSignIn : `https://${awsExports.oauth.redirectSignIn}`;
     const loginUrl = `${domain}/login?client_id=${awsExports.aws_user_pools_web_client_id}&response_type=token&scope=email+openid+profile&redirect_uri=${redirectUri}`;
     console.log(`Redirecting to login at: ${loginUrl}`);
     window.location.href = loginUrl;
 }
 
+// Show Main Content
 function showAppContent() {
     document.getElementById("loadingScreen").style.display = "none";
     document.getElementById("appContent").style.display = "block";
-    console.log("App content is now visible.");
 }
 
-// Run authentication check only if it hasn't been completed
-if (!localStorage.getItem('authCheckCompleted')) {
-    checkAuth();
+// Load Company Options Based on User Group
+function loadCompanyOptions() {
+    const providerSelect = document.getElementById('providerSelect');
+    providerSelect.innerHTML = '<option value="" disabled selected>Select a company</option>';
+    const token = localStorage.getItem('idToken');
+    const decodedToken = window.jwt_decode(token);
+    const isAdmin = decodedToken['cognito:groups'] && decodedToken['cognito:groups'].includes('admin');
+    const companies = isAdmin ? ADMIN_COMPANIES : STANDARD_COMPANIES;
+
+    companies.forEach(company => {
+        const option = document.createElement('option');
+        option.value = company.toLowerCase();
+        option.textContent = normalizeCompanyName(company);
+        providerSelect.appendChild(option);
+    });
 }
 
-// Only clear authentication state on explicit logout or page refresh, not on navigation
-window.addEventListener("load", () => {
-    if (!sessionStorage.getItem("authCheckPersist")) {
-        sessionStorage.setItem("authCheckPersist", "set");
-        console.log("Setting auth check persist flag to prevent repeated reset");
+// Fetch and Display Company and Directory Data
+document.getElementById('providerSelect').addEventListener('change', async function () {
+    const company = this.value;
+    if (company) {
+        await fetchCompanyData(company);
+        await fetchEmployeeDirectory(company);
     }
 });
 
-async function fetchData() {
-    let token = localStorage.getItem('idToken');  // Retrieve idToken for API calls
-    if (!token) {
-        try {
-            const session = await Auth.currentSession();
-            token = session.getIdToken().getJwtToken();
-            localStorage.setItem('idToken', token);
-        } catch (error) {
-            console.error("No valid session found. Redirecting to login.");
-            redirectToLogin();
-            return;
-        }
-    }
-
-    const provider = document.getElementById('providerSelect').value;
-    const dataType = document.getElementById('dataTypeSelect').value;
-    const errorMessage = document.getElementById('errorMessage');
-    const table = document.getElementById('dataTable');
-    const tableHeaders = document.getElementById('tableHeaders');
-    const tableBody = document.getElementById('tableBody');
-
-    errorMessage.style.display = 'none';
-    table.style.display = 'none';
-    tableHeaders.innerHTML = '';
-    tableBody.innerHTML = '';
-
-    if (!provider || !dataType) {
-        errorMessage.innerText = "Please select both a provider and a data type.";
-        errorMessage.style.display = 'block';
-        return;
-    }
-
+// Fetch Company Data
+async function fetchCompanyData(company) {
+    const token = localStorage.getItem('idToken');
     try {
-        const response = await fetch(`https://api.finchdemo.perilabs.io/finchdata?provider=${provider}&dataType=${dataType}`, {
+        const response = await fetch(`https://api.finchdemo.perilabs.io/finchdata?provider=${company}&dataType=company`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            populateCompanyInfo(data);
+            showCompanyInfo();
+        } else {
+            console.error("Error fetching company data:", data.error);
+        }
+    } catch (error) {
+        console.error("Error fetching company data:", error);
+    }
+}
+
+// Populate Company Information
+function populateCompanyInfo(data) {
+    const companyDetails = document.getElementById('companyDetails');
+    companyDetails.innerHTML = '';
+    const info = [
+        { label: "Company Name", value: data.legal_name || "Data Not Provided or Blank" },
+        { label: "Industry", value: data.entity?.type || "Data Not Provided or Blank" },
+        { label: "Subtype", value: data.entity?.subtype || "Data Not Provided or Blank" },
+        { label: "Primary Email", value: data.primary_email || "Data Not Provided or Blank" },
+        { label: "Primary Phone Number", value: data.primary_phone_number || "Data Not Provided or Blank" },
+    ];
+
+    info.forEach(({ label, value }) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<th>${label}</th><td>${value}</td>`;
+        companyDetails.appendChild(row);
+    });
+}
+
+// Fetch Employee Directory
+async function fetchEmployeeDirectory(company) {
+    const token = localStorage.getItem('idToken');
+    try {
+        const response = await fetch(`https://api.finchdemo.perilabs.io/finchdata?provider=${company}&dataType=directory`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await response.json();
+        if (response.ok) {
+            populateEmployeeList(data.individuals);
+            showEmployeeDirectory();
+        } else {
+            console.error("Error fetching employee directory:", data.error);
+        }
+    } catch (error) {
+        console.error("Error fetching employee directory:", error);
+    }
+}
+
+// Populate Employee List
+function populateEmployeeList(individuals) {
+    const employeeList = document.getElementById('employeeList');
+    employeeList.innerHTML = '';
+    individuals.forEach(individual => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item');
+        listItem.textContent = `${individual.first_name} ${individual.last_name}`;
+        listItem.dataset.id = individual.id;
+        listItem.addEventListener('click', () => fetchEmployeeDetails(individual.id));
+        employeeList.appendChild(listItem);
+    });
+}
+
+// Fetch Individual Employee Details
+async function fetchEmployeeDetails(employeeId) {
+    const token = localStorage.getItem('idToken');
+    const company = document.getElementById('providerSelect').value;
+
+    // Construct the payload as per Finch's documentation
+    const payload = JSON.stringify({
+        requests: [
+            { individual_id: employeeId }
+        ]
+    });
+
+    // Log payload and headers for debugging
+    console.log("Sending request for employee details:", payload);
+    
+    try {
+        const response = await fetch(`https://api.finchdemo.perilabs.io/finchdata?provider=${company}&dataType=individual`, {
+            method: 'POST',
             headers: {
-                Authorization: `Bearer ${token}`  // Use idToken for Authorization header
-            }
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: payload
         });
 
         const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to fetch data");
+        if (response.ok) {
+            console.log("Employee details fetched successfully:", data);
+            populateEmployeeDetails(data.responses[0]?.body || {});
+            showEmployeeDetails();
+        } else {
+            console.error("Error fetching employee details:", data.error, "Response:", data);
         }
-
-        populateTable(data);
     } catch (error) {
-        console.error("Error fetching data:", error);
-        errorMessage.innerText = `Error: ${error.message}`;
-        errorMessage.style.display = 'block';
+        console.error("Error fetching employee details:", error);
     }
 }
 
-function populateTable(data) {
-    const table = document.getElementById('dataTable');
-    const tableHeaders = document.getElementById('tableHeaders');
-    const tableBody = document.getElementById('tableBody');
+// Populate Employee Details
+function populateEmployeeDetails(data) {
+    document.getElementById('employeeName').textContent = `Employee Name: ${data.first_name} ${data.last_name}`;
+    document.getElementById('preferredName').textContent = data.preferred_name || "Data Not Provided or Blank";
+    document.getElementById('emails').textContent = data.emails?.map(e => e.data).join(", ") || "Data Not Provided or Blank";
+    document.getElementById('phoneNumbers').textContent = data.phone_numbers || "Data Not Provided or Blank";
+    document.getElementById('gender').textContent = data.gender || "Data Not Provided or Blank";
+    document.getElementById('dob').textContent = data.dob || "Data Not Provided or Blank";
+    document.getElementById('residence').textContent = data.residence || "Data Not Provided or Blank";
+    document.getElementById('ethnicity').textContent = data.ethnicity || "Data Not Provided or Blank";
+}
 
-    const headers = Object.keys(data[0] || {});
-    const rows = data.map(Object.values);
-
-    headers.forEach(header => {
-        const th = document.createElement('th');
-        th.innerText = header;
-        tableHeaders.appendChild(th);
-    });
-
-    rows.forEach(rowData => {
-        const tr = document.createElement('tr');
-        rowData.forEach(cellData => {
-            const td = document.createElement('td');
-            td.innerText = cellData;
-            tr.appendChild(td);
-        });
-        tableBody.appendChild(tr);
-    });
-
-    table.style.display = 'table';
+// Initialize authentication and user info display
+if (!localStorage.getItem('authCheckCompleted')) {
+    checkAuth();
 }
